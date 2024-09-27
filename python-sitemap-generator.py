@@ -27,6 +27,9 @@ from lxml.html.soupparser import fromstring
 # sudo apt-get install python3-pip
 # pip3 install setuptools
 # pip3 install var_dump
+# pip3 install bs4
+# pip3 install BeautifulSoup
+# pip3 install lxml
 
 queue = []
 checked = []
@@ -37,10 +40,10 @@ link_threads = []
 
 # adjust to your liking but keep values low to prevent firewalls blocking you for flooding
 # or using up all of your web server resources.
-MaxThreads = 4
+MaxThreads = 100
 
 # DEFINE YOUR URL - CUSTOM URL!
-InitialURL = 'HTTPS://SOME_URL.TEST/'
+InitialURL = 'http://hublist.pwiam.com'
 
 InitialURLInfo = urlparse(InitialURL)
 InitialURLLen = len(InitialURL.split('/'))
