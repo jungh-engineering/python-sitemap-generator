@@ -9,13 +9,15 @@
 import threading
 import time
 import sys
+import email.utils as eut
+import random
+
 from urllib.request import urlopen
 from urllib.request import Request
 from urllib.error import URLError
 from urllib.request import HTTPError
 from urllib.parse import urljoin
 from urllib.parse import urlparse
-import email.utils as eut
 
 from pprint import pprint
 from var_dump import var_dump
@@ -27,6 +29,9 @@ from lxml.html.soupparser import fromstring
 # sudo apt-get install python3-pip
 # pip3 install setuptools
 # pip3 install var_dump
+# pip3 install bs4
+# pip3 install BeautifulSoup
+# pip3 install lxml
 
 queue = []
 checked = []
@@ -37,7 +42,7 @@ link_threads = []
 
 # adjust to your liking but keep values low to prevent firewalls blocking you for flooding
 # or using up all of your web server resources.
-MaxThreads = 4
+MaxThreads = 200
 
 # DEFINE YOUR URL - CUSTOM URL!
 InitialURL = 'HTTPS://SOME_URL.TEST/'
@@ -56,12 +61,6 @@ run_end = None
 run_dif = None
 
 filename = 'sitemap.xml'
-
-request_headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Connection": "keep-alive"
-}
 
 if InitialURLNetloc.startswith(netloc_prefix_str):
     InitialURLNetloc = InitialURLNetloc[netloc_prefix_len:]
@@ -186,7 +185,7 @@ class Sitemap:
 
     def xml(self):
         f = open(filename, 'w')
-        
+
         print (etree.tostring(self.urlset, pretty_print=True, encoding="unicode", method="xml"), file=f)
         f.close()
 
@@ -208,7 +207,7 @@ class Crawl(threading.Thread):
         temp_object = None
 
         try:
-            temp_req = Request(self.obj['url'], headers=request_headers)
+            temp_req = Request(self.obj['url'], headers=get_randomized_headers())
             temp_res = urlopen(temp_req)
             temp_code = temp_res.getcode()
             temp_type = temp_res.info()["Content-Type"]
@@ -284,6 +283,32 @@ def FormatDate(datetime):
         pprint(datearr)
 
     return date
+
+
+def get_randomized_headers():
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
+    ]
+
+    accepts = [
+        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "text/html,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "application/json, text/plain, */*",
+        "*/*"
+    ]
+
+    connections = ["keep-alive", "close"]
+
+    headers = {
+        "User-Agent": random.choice(user_agents),
+        "Accept": random.choice(accepts),
+        "Connection": random.choice(connections)
+    }
+
+    return headers
 
 
 def ParseThread(url, data):
