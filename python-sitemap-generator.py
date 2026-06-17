@@ -32,9 +32,6 @@ from lxml.html.soupparser import fromstring
 # pip3 install bs4
 # pip3 install BeautifulSoup
 # pip3 install lxml
-# pip3 install bs4
-# pip3 install BeautifulSoup
-# pip3 install lxml
 
 queue = []
 checked = []
@@ -45,10 +42,10 @@ link_threads = []
 
 # adjust to your liking but keep values low to prevent firewalls blocking you for flooding
 # or using up all of your web server resources.
-MaxThreads = 10
+MaxThreads = 200
 
 # DEFINE YOUR URL - CUSTOM URL!
-InitialURL = 'HTTPS://SOME_URL.TEST/'
+InitialURL = 'https://dev.cdpaccess.com/videos/?s%5Btitle%5D='
 
 InitialURLInfo = urlparse(InitialURL)
 InitialURLLen = len(InitialURL.split('/'))
@@ -64,12 +61,6 @@ run_end = None
 run_dif = None
 
 filename = 'sitemap.xml'
-
-request_headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Connection": "keep-alive"
-}
 
 if InitialURLNetloc.startswith(netloc_prefix_str):
     InitialURLNetloc = InitialURLNetloc[netloc_prefix_len:]
