@@ -45,7 +45,7 @@ link_threads = []
 MaxThreads = 200
 
 # DEFINE YOUR URL - CUSTOM URL!
-InitialURL = 'https://dev.cdpaccess.com/videos/?s%5Btitle%5D='
+InitialURL = 'HTTPS://SOME_URL.TEST/'
 
 InitialURLInfo = urlparse(InitialURL)
 InitialURLLen = len(InitialURL.split('/'))
