@@ -1,14 +1,15 @@
 #!/usr/bin/python
 
-# Python Sitemap Generator
-# Version: 0.4.2
-
-# Przemek Wiejak
-# GitHub: https://github.com/wiejakp/python-sitemap-generator
+# FORK OF: 
+#   Python Sitemap Generator
+#   Version: 0.4.2
+#   Przemek Wiejak
+#   GitHub: https://github.com/wiejakp/python-sitemap-generator
 
 import threading
 import time
 import sys
+import argparse
 import email.utils as eut
 import random
 
@@ -44,8 +45,25 @@ link_threads = []
 # or using up all of your web server resources.
 MaxThreads = 200
 
-# DEFINE YOUR URL - CUSTOM URL!
-InitialURL = 'HTTPS://SOME_URL.TEST/'
+# Parse the initial URL from the command line
+parser = argparse.ArgumentParser(
+    description='Python Sitemap Generator - crawls a site and generates a sitemap.xml'
+)
+parser.add_argument(
+    'url',
+    nargs='?',
+    help='the initial URL to crawl, e.g. https://example.com/'
+)
+args = parser.parse_args()
+
+InitialURL = args.url
+
+if not InitialURL:
+    print('')
+    print('Please provide a URL as a command-line argument, e.g.:')
+    print('  python app.py https://example.com/')
+    print('')
+    sys.exit()
 
 InitialURLInfo = urlparse(InitialURL)
 InitialURLLen = len(InitialURL.split('/'))
@@ -74,12 +92,6 @@ class RunCrawler(threading.Thread):
     print("")
     print(InitialURL)
     print("")
-
-    if InitialURL == 'HTTPS://SOME_URL.TEST/':
-        print ('')
-        print ('Change "InitialURL" variable and try again!')
-        print ('')
-        sys.exit()
 
     def __init__(self, url):
         threading.Thread.__init__(self)
@@ -162,7 +174,8 @@ class Sitemap:
 
             if hasattr(obj['obj'], 'info'):
                 lastmod_info = obj['obj'].info()
-                lastmod_header = lastmod_info["Last-Modified"]
+                # Use .get() so pages without a Last-Modified header don't raise KeyError
+                lastmod_header = lastmod_info.get("Last-Modified")
 
 
             # check if 'Last-Modified' header exists
@@ -236,6 +249,8 @@ class Crawl(threading.Thread):
             temp_status = 000
             pass
 
+        # TODO: this except block is unreachable - HTTPError is a subclass of URLError,
+        # so the URLError handler above catches it first; handle HTTPError before URLError
         except HTTPError as e:
             print ('HTTPError: ', self.obj['url'])
             temp_status = e.code
@@ -254,6 +269,7 @@ def dump(obj):
     if '__dict__' in dir(obj):
       newobj=obj.__dict__
 
+      # TODO: fix Python 3 compatibility - dict.has_key() was removed in Python 3
       if ' object at ' in str(obj) and not newobj.has_key('__type__'):
           newobj['__type__']=str(obj)
 

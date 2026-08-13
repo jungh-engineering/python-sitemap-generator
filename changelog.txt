@@ -1,3 +1,12 @@
+Date" 2026/08/13
+Version: 0.5.0
+
+- Forked from Przemek Wiejak's github, added init.sh for automatically installing dependencies, and updated the script appropriately to 2026.
+- Updated README
+- The script now takes the url as command line argument and no longer requires the user to modify the `InitialURL` variable.
+
+========================================
+
 Date: 2022/12/26
 Version: 0.4.2
 

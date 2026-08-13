@@ -9,19 +9,37 @@ The script will run under Linux operating system which supports Python 3 languag
 
 Use with caution, if you set thread count too high, it can cause your web server to bug out and cause some links to throw an error, or your IP will be blocked due to firewall threashold.
 
-## REQUIREMENTS
-- Python 3
-- sudo apt-get install python-beautifulsoup
-- sudo apt-get install python-pip
-- sudo apt-get install python3-pip
-- pip3 install setuptools
-- pip3 install bs4
-- pip3 install lxml
-- pip3 install var_dump
-
 ## USAGE:
-- Set up the 'InitialURL' variable to point to Web site which you want to generate sitemap for.
+- [DEPRECATED] Set up the 'InitialURL' variable to point to Web site which you want to generate sitemap for.
 - Set script to executable: `sudo chmod +x python-sitemap-generator.py`.
 - Run script: `python3 python-sitemap-generator.py`.
 
 ![Python Sitemap Generator](https://raw.github.com/wiejakp/python-sitemap-generator/master/screenshot.png)
+
+```bash
+python python-sitemap-generator.py https://example.com/
+```
+
+The crawler starts at the given URL, follows same-site links (staying within
+the starting host), and writes the results to `sitemap.xml` in the current
+directory.
+
+Examples:
+
+```bash
+# Crawl a site
+python python-sitemap-generator.py https://example.com/
+
+# Show usage help
+python python-sitemap-generator.py --help
+```
+
+If no URL is provided, the script prints usage instructions and exits.
+
+## Notes & limitations
+
+- Only `text/html` pages are crawled; other content types (e.g. XML, PDFs)
+  are not parsed for links.
+- `HTTPError` is currently unreachable as a separate exception handler —
+  `URLError` catches it first (inherited from the original code).
+- The crawler does not honor `robots.txt`.
